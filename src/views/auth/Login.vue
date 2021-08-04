@@ -8,7 +8,7 @@
 
             <div>
                 <label for="password">Password</label>
-                <input v-model="form.password" type="password" placeholder="email" autocomplete="off">
+                <input v-model="form.password" type="password" placeholder="password" autocomplete="off">
             </div>
         </form>
 
@@ -19,7 +19,8 @@
 </template>
 
 <script>
-import AuthService from "@/services/AuthService"
+// import AuthService from "@/services/AuthService"
+import AuthUser from '@/store/AuthUser'
 export default {
     data(){
         return{
@@ -31,9 +32,10 @@ export default {
     },
     methods: {
         async login(){
-            let res =await AuthService.login(this.form)
+            // let res =await AuthService.login(this.form)
+            let res = await AuthUser.dispatch('login', this.form)
             if(res.success){
-                this.$swal("Login Success", `Welcome, $(res.user.username)`, "success")
+                this.$swal("Login Success", `Welcome, ${res.user.username}`, "success")
                 this.$router.push('/pokedex')
             }else{
                 this.$swal("Login Failed", res.message,"error")

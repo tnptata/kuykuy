@@ -49,7 +49,7 @@ export default {
                type:''
             }
         },
-        addPokemon(){
+        async addPokemon(){
             let payload = {
                 name: this.form.name,
                 type: this.form.type.split(",").map(
@@ -58,8 +58,13 @@ export default {
             }
             //todo : เรียก action in Pokemonstore เพื่อเพิ่มข้อมูล
             console.log(payload)
-            Pokemonstore.dispatch("addPokemon",payload)
-
+            let res =await Pokemonstore.dispatch("addPokemon",payload)
+            if(res.success){
+                this.clearForm()
+                this.$router.push("/pokedex")
+            }else{
+                this.$swal("Add Failed", res.massage, "error")
+            }
             this.clearForm()
         }
     }

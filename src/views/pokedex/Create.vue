@@ -1,14 +1,26 @@
 <template>
     <div>
-        <pokemon-create-form></pokemon-create-form>
+        <pokedex-create-form></pokedex-create-form>
     </div>
 </template>
 
 <script>
-import PokemonCreateForm from '../../components/PokemonCreateForm.vue'
+import PokedexCreateForm from '../../components/PokedexCreateForm.vue'
+import AuthUser from '@/store/AuthUser'
 export default{
     components: {
-        PokemonCreateForm
+        PokedexCreateForm
+    },
+    mounted() {
+        if(!this.isAuthen()){
+            this.$swal("Restricted Area", "You have no permission", "warning")
+            this.$router.push("/pokedex")
+        }
+    },
+    methods:{
+        isAuthen(){
+            return AuthUser.getters.isAuthen
+        }
     }
 }
 </script>

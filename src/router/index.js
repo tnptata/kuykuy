@@ -7,9 +7,16 @@ import Pokedex from '@/views/pokedex/Index';
 import PokedexCreate from '@/views/pokedex/Create'
 import Login from '@/views/auth/Login'
 import Logout from '@/views/auth/Logout'
+import Register from '@/views/auth/Register'
+import PokedexEdit from '@/views/pokedex/Edit'
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
+  },
   {
     path: '/login',
     name: 'Login',
@@ -44,6 +51,11 @@ const routes = [
     path: '/pokedex/create',
     name: 'PokedexCreate',
     component: PokedexCreate
+  },
+  {
+    path: '/pokedex/:id/edit',
+    name: 'PokedexEdit',
+    component: PokedexEdit
   },
   {
     path: '/about',

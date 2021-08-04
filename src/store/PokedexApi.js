@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Axios from 'axios'
+import AuthService from '../services/AuthService'
 
 let api_endpoint = process.env.VUE_APP_POKEMON_ENDPOINT || "http://localhost:3000"
 Vue.use(Vuex)
@@ -31,23 +32,49 @@ export default new Vuex.Store({
         commit('fetch',{ res })
     },
     async addPokemon({ commit }, payload){
-      let url = api_endpoint + "/monsters"
-      let body = {
-        name : payload.name,
-        name_jp: payload.name_jp,
-      }
-      // type_ids = []
-      // for(let type of payload.pokemon_types){
-      //   let types = await Axios.get(api_endpoint+ "/types?name=" +type)
-      //   type_ids.push(types.data.id)
-      // }
+      let qs = payload.pokemon_types.map((it) => "name_in=" +it).join("&")
+      let res_types = await Axios.get(api_endpoint + "/types?" +qs)
       
-
-      // console.log(payload.pokemon_types)
-      let res = await Axios.post(url, body)
-      //todo: call api to add data
-      let data = res.data
-      commit('add', data)
+      let url = api_endpoint + "/monsters"
+      // let user = AuthService.getUser()
+      let body ={
+        name:payload.name,
+        name_jp:payload.name_jp,
+        pokemon_types: res_types.data.map((it) => it.id),
+        // user:user.id
+      }
+      try{
+        let headers =AuthService.getApiHeader()
+        let res =await Axios.post(url,body,headers)
+        if(res.status === 200){
+          commit("add", res.data)
+          return{
+            success: true,
+            data: res.data
+          }
+        }else{
+          console.err(res)
+          return{
+            success: false,
+            message: "Unknown status code: "+ res.status
+          }
+        }
+      }catch(e){
+        if(e.response.status === 403){
+          console.error(e.response.data.message)
+          return{
+            success: false,
+            message: e.response.data.message
+          }
+        }else{
+          return{
+            success:false,
+            message: "Unknown error: " + e.response.data
+          }
+        }
+      }
+      
+      
     },
 
     async editPokemon({ commit }, payload){

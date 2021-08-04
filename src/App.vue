@@ -6,13 +6,23 @@
       <router-link to="/numbers">number</router-link> |
       <router-link to="/pokemons">pokemons</router-link> |
       <router-link to="/pokedex">pokedex</router-link> |
-      <router-link to="/login">login</router-link> |
-      <router-link to="/logout">logout</router-link>
+      <router-link v-if="!isAuthen()" to="/login">login</router-link> |
+      <router-link v-if="isAuthen()" to="/logout">logout</router-link> |
+      <router-link v-if="!isAuthen()" to="/register">register</router-link>
     </div>
     <router-view/>
   </div>
 </template>
-
+<script>
+import AuthUser from '@/store/AuthUser'
+export default {
+  methods:{
+    isAuthen(){
+      return AuthUser.getters.isAuthen
+    }
+  }
+}
+</script>
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

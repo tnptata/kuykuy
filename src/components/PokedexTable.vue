@@ -7,7 +7,7 @@
                     <th>Name (EN)</th>
                     <th>Name (JP)</th>
                     <th>Type</th>
-                    <th>Action</th>
+                    <th v-if="isAuthen()">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,12 +26,8 @@
                     <td v-if="index === editIndex">
                         <input type="text" v-model="form.pokemon_types">
                     </td>
-                    <td v-if="index !== editIndex">
-                        <button @click="openForm(index, poke)">Click to Edit</button>
-                    </td>
-                    <td v-if="index === editIndex">
-                        <button @click="editPokemon">Update Pokemon</button>
-                        <button @click="closeForm">Cancel</button>
+                    <td v-if="isAuthen()">
+                        <router-link :to="{name: 'PokedexEdit', params: {id: poke.id}}">Edit</router-link>
                     </td>
                 </tr>
             </tbody>
@@ -42,6 +38,7 @@
 
 <script>
     import PokedexApiStore from '@/store/PokedexApi'
+    import AuthUser from '@/store/AuthUser'
     export default{
         data() {
             return {
@@ -61,6 +58,9 @@
             this.fetchPokemon()
         },
         methods: {
+            isAuthen(){
+                return AuthUser.getters.isAuthen
+            },
             arraToString(arr){
                 return arr
             },
